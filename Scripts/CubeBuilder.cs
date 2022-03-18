@@ -3,6 +3,15 @@ using System;
 
 public class CubeBuilder : MeshInstance
 {
+  private Material _material;
+
+  public override void _Ready()
+  {
+    base._Ready();
+    
+    _material = ResourceLoader.Load<Material>("res://Materials/Cube.tres");
+  }
+
   public override void _Process(float delta)
   {
     base._Process(delta);
@@ -44,5 +53,7 @@ public class CubeBuilder : MeshInstance
     meshBuilder.BuildTriangle(b3, b0, t0, 5);
 
     Mesh = meshBuilder.CreateMesh();
+    
+    Mesh.SurfaceSetMaterial(0, _material);
   }
 }
