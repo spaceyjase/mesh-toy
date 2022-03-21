@@ -10,11 +10,6 @@ public class CubeBuilder : MeshInstance
     base._Ready();
     
     _material = ResourceLoader.Load<Material>("res://Materials/Cube.tres");
-  }
-
-  public override void _Process(float delta)
-  {
-    base._Process(delta);
 
     var meshBuilder = new MeshBuilder(6); // 6 faces
 
@@ -55,5 +50,13 @@ public class CubeBuilder : MeshInstance
     Mesh = meshBuilder.CreateMesh();
     
     Mesh.SurfaceSetMaterial(0, _material);
+  }
+
+  public override void _Process(float delta)
+  {
+    base._Process(delta);
+    
+    // Rotate the cube around the Y axis
+    RotateY(Mathf.Deg2Rad(25) * delta);
   }
 }

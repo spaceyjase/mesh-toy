@@ -38,9 +38,9 @@ public class MeshBuilder : Resource
     var p1Index = vertices.Count + 1;
     var p2Index = vertices.Count + 2;
 
-    indices.Add(p0Index);
-    indices.Add(p1Index);
     indices.Add(p2Index);
+    indices.Add(p1Index);
+    indices.Add(p0Index);
 
     submeshIndices[submesh].Add(p0Index);
     submeshIndices[submesh].Add(p1Index);
@@ -54,9 +54,9 @@ public class MeshBuilder : Resource
     normals.Add(normal);
     normals.Add(normal);
 
-    uvs.Add(new Vector2(0, 0));
-    uvs.Add(new Vector2(0, 1));
     uvs.Add(new Vector2(1, 1));
+    uvs.Add(new Vector2(0, 1));
+    uvs.Add(new Vector2(0, 0));
   }
 
   public Mesh CreateMesh()
@@ -71,6 +71,8 @@ public class MeshBuilder : Resource
     arr[(int)Mesh.ArrayType.Index] = indices.ToArray();
 
     mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arr);
+    
+    // TODO: create submeshes
     
     return mesh;
   }
