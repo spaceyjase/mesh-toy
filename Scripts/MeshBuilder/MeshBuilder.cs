@@ -1,29 +1,24 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using Godot;
 using Godot.Collections;
 
 public class MeshBuilder : Resource
 {
-  private readonly List<Vector3> vertices = new List<Vector3>();
-  private readonly List<int> indices = new List<int>();
+  private readonly System.Collections.Generic.Dictionary<int, List<Vector3>> vertices = new();
+  private readonly System.Collections.Generic.Dictionary<int, List<int>> indices = new();
 
-  private readonly List<Vector3> normals = new List<Vector3>();
-  private readonly List<Vector2> uvs = new List<Vector2>();
+  private readonly System.Collections.Generic.Dictionary<int, List<Vector3>> normals = new(); 
+  private readonly System.Collections.Generic.Dictionary<int, List<Vector2>> uvs = new();
+  
+  private readonly int _submeshCount;
 
-  private readonly List<int>[] submeshIndices;
-
-  public MeshBuilder()
-  {
-    
-  }
+  public MeshBuilder() { }    // Required by godot
 
   public MeshBuilder(int submeshCount)
   {
-    submeshIndices = new List<int>[submeshCount];
-    for (var i = 0; i < submeshCount; i++)
-    {
-      submeshIndices[i] = new List<int>();
-    }
+    _submeshCount = submeshCount;
   }
 
   public void BuildTriangle(Vector3 p0, Vector3 p1, Vector3 p2, int submesh)
@@ -34,46 +29,50 @@ public class MeshBuilder : Resource
 
   private void BuildTriangle(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 normal, int submesh)
   {
-    var p0Index = vertices.Count;
-    var p1Index = vertices.Count + 1;
-    var p2Index = vertices.Count + 2;
+    if (!vertices.ContainsKey(submesh))
+    {
+      vertices[submesh] = new List<Vector3>();
+      indices[submesh] = new List<int>();
+      normals[submesh] = new List<Vector3>();
+      uvs[submesh] = new List<Vector2>();
+    }
+    
+    var p0Index = vertices[submesh].Count;
+    var p1Index = vertices[submesh].Count + 1;
+    var p2Index = vertices[submesh].Count + 2;
 
-    indices.Add(p2Index);
-    indices.Add(p1Index);
-    indices.Add(p0Index);
+    indices[submesh].Add(p2Index);
+    indices[submesh].Add(p1Index);
+    indices[submesh].Add(p0Index);
 
-    submeshIndices[submesh].Add(p0Index);
-    submeshIndices[submesh].Add(p1Index);
-    submeshIndices[submesh].Add(p2Index);
+    vertices[submesh].Add(p0);
+    vertices[submesh].Add(p1);
+    vertices[submesh].Add(p2);
 
-    vertices.Add(p0);
-    vertices.Add(p1);
-    vertices.Add(p2);
+    normals[submesh].Add(normal);
+    normals[submesh].Add(normal);
+    normals[submesh].Add(normal);
 
-    normals.Add(normal);
-    normals.Add(normal);
-    normals.Add(normal);
-
-    uvs.Add(new Vector2(1, 1));
-    uvs.Add(new Vector2(0, 1));
-    uvs.Add(new Vector2(0, 0));
+    uvs[submesh].Add(new Vector2(1, 1));
+    uvs[submesh].Add(new Vector2(0, 1));
+    uvs[submesh].Add(new Vector2(0, 0));
   }
 
   public Mesh CreateMesh()
   {
     var mesh = new ArrayMesh();
+    for (var i = 0; i < _submeshCount; ++i)
+    {
+      var arr = new Array();
+      arr.Resize((int)Mesh.ArrayType.Max);
+      arr[(int)Mesh.ArrayType.Vertex] = vertices[i].ToArray();
+      arr[(int)Mesh.ArrayType.TexUv] = uvs[i].ToArray();
+      arr[(int)Mesh.ArrayType.Normal] = normals[i].ToArray();
+      arr[(int)Mesh.ArrayType.Index] = indices[i].ToArray();
+      
+      mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arr);
+    }
 
-    var arr = new Array();
-    arr.Resize((int)Mesh.ArrayType.Max);
-    arr[(int)Mesh.ArrayType.Vertex] = vertices.ToArray();
-    arr[(int)Mesh.ArrayType.TexUv] = uvs.ToArray();
-    arr[(int)Mesh.ArrayType.Normal] = normals.ToArray();
-    arr[(int)Mesh.ArrayType.Index] = indices.ToArray();
-
-    mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arr);
-    
-    // TODO: create submeshes
-    
     return mesh;
   }
 }

@@ -3,14 +3,10 @@ using System;
 
 public class CubeBuilder : MeshInstance
 {
-  private Material _material;
-
   public override void _Ready()
   {
     base._Ready();
     
-    _material = ResourceLoader.Load<Material>("res://Materials/Cube.tres");
-
     var meshBuilder = new MeshBuilder(6); // 6 faces
 
     var cubeSize = Vector3.One * 0.5f; // half the size passed in
@@ -49,7 +45,12 @@ public class CubeBuilder : MeshInstance
 
     Mesh = meshBuilder.CreateMesh();
     
-    Mesh.SurfaceSetMaterial(0, _material);
+    Mesh.SurfaceSetMaterial(0, ResourceLoader.Load<Material>("res://Materials/0.tres"));
+    Mesh.SurfaceSetMaterial(1, ResourceLoader.Load<Material>("res://Materials/1.tres"));
+    Mesh.SurfaceSetMaterial(2, ResourceLoader.Load<Material>("res://Materials/2.tres"));
+    Mesh.SurfaceSetMaterial(3, ResourceLoader.Load<Material>("res://Materials/3.tres"));
+    Mesh.SurfaceSetMaterial(4, ResourceLoader.Load<Material>("res://Materials/4.tres"));
+    Mesh.SurfaceSetMaterial(5, ResourceLoader.Load<Material>("res://Materials/5.tres"));
   }
 
   public override void _Process(float delta)
