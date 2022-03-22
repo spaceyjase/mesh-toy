@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using Godot;
-using Godot.Collections;
 
 public class MeshBuilder : Resource
 {
-  private readonly System.Collections.Generic.Dictionary<uint, List<Vector3>> vertices = new();
-  private readonly System.Collections.Generic.Dictionary<uint, List<int>> indices = new();
+  private readonly Dictionary<uint, List<Vector3>> vertices = new();
+  private readonly Dictionary<uint, List<int>> indices = new();
 
-  private readonly System.Collections.Generic.Dictionary<uint, List<Vector3>> normals = new(); 
-  private readonly System.Collections.Generic.Dictionary<uint, List<Vector2>> uvs = new();
+  private readonly Dictionary<uint, List<Vector3>> normals = new(); 
+  private readonly Dictionary<uint, List<Vector2>> uvs = new();
   
   private readonly uint _submeshCount;
 
@@ -17,6 +16,11 @@ public class MeshBuilder : Resource
   public MeshBuilder(uint submeshCount)
   {
     _submeshCount = submeshCount;
+    // var v = new List<Vector3>[submeshCount];
+    // for (var i = 0; i < submeshCount; i++)
+    // {
+    //   v[i] = new List<Vector3>();
+    // }
   }
 
   public void BuildTriangle(Vector3 p0, Vector3 p1, Vector3 p2, uint submesh)
@@ -67,7 +71,7 @@ public class MeshBuilder : Resource
     var mesh = new ArrayMesh();
     for (var i = 0u; i < _submeshCount; ++i)
     {
-      var arr = new Array();
+      var arr = new Godot.Collections.Array();
       arr.Resize((int)Mesh.ArrayType.Max);
       arr[(int)Mesh.ArrayType.Vertex] = vertices[i].ToArray();
       arr[(int)Mesh.ArrayType.TexUv] = uvs[i].ToArray();
