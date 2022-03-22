@@ -49,21 +49,21 @@ public class MeshBuilder : Resource
     var p1Index = vertices[submesh].Count + 1;
     var p2Index = vertices[submesh].Count + 2;
 
-    indices[submesh].Add(p2Index);
-    indices[submesh].Add(p1Index);
     indices[submesh].Add(p0Index);
+    indices[submesh].Add(p1Index);
+    indices[submesh].Add(p2Index);
 
     vertices[submesh].Add(p0);
-    vertices[submesh].Add(p1);
     vertices[submesh].Add(p2);
+    vertices[submesh].Add(p1);
 
     normals[submesh].Add(normal);
     normals[submesh].Add(normal);
     normals[submesh].Add(normal);
 
-    uvs[submesh].Add(new Vector2(1, 1));
-    uvs[submesh].Add(new Vector2(0, 1));
     uvs[submesh].Add(new Vector2(0, 0));
+    uvs[submesh].Add(new Vector2(0, 1));
+    uvs[submesh].Add(new Vector2(1, 1));
   }
 
   public Mesh CreateMesh()
