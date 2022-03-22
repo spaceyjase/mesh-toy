@@ -1,33 +1,37 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using Godot;
 using Godot.Collections;
 
 public class MeshBuilder : Resource
 {
-  private readonly System.Collections.Generic.Dictionary<int, List<Vector3>> vertices = new();
-  private readonly System.Collections.Generic.Dictionary<int, List<int>> indices = new();
+  private readonly System.Collections.Generic.Dictionary<uint, List<Vector3>> vertices = new();
+  private readonly System.Collections.Generic.Dictionary<uint, List<int>> indices = new();
 
-  private readonly System.Collections.Generic.Dictionary<int, List<Vector3>> normals = new(); 
-  private readonly System.Collections.Generic.Dictionary<int, List<Vector2>> uvs = new();
+  private readonly System.Collections.Generic.Dictionary<uint, List<Vector3>> normals = new(); 
+  private readonly System.Collections.Generic.Dictionary<uint, List<Vector2>> uvs = new();
   
-  private readonly int _submeshCount;
+  private readonly uint _submeshCount;
 
   public MeshBuilder() { }    // Required by godot
 
-  public MeshBuilder(int submeshCount)
+  public MeshBuilder(uint submeshCount)
   {
     _submeshCount = submeshCount;
   }
 
-  public void BuildTriangle(Vector3 p0, Vector3 p1, Vector3 p2, int submesh)
+  public void BuildTriangle(Vector3 p0, Vector3 p1, Vector3 p2, uint submesh)
   {
+    if (submesh >= _submeshCount)
+    {
+      GD.PrintErr("Submesh index out of range");
+      return;
+    }
+    
     var normal = (p1 - p0).Cross(p2 - p0).Normalized();
     BuildTriangle(p0, p1, p2, normal, submesh);
   }
 
-  private void BuildTriangle(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 normal, int submesh)
+  private void BuildTriangle(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 normal, uint submesh)
   {
     if (!vertices.ContainsKey(submesh))
     {
@@ -61,7 +65,7 @@ public class MeshBuilder : Resource
   public Mesh CreateMesh()
   {
     var mesh = new ArrayMesh();
-    for (var i = 0; i < _submeshCount; ++i)
+    for (var i = 0u; i < _submeshCount; ++i)
     {
       var arr = new Array();
       arr.Resize((int)Mesh.ArrayType.Max);
