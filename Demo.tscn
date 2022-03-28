@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Scripts/CubeBuilder.cs" type="Script" id=1]
 [ext_resource path="res://Scripts/ChessBoardMaker.cs" type="Script" id=2]
 [ext_resource path="res://Scripts/PyramidMaker.cs" type="Script" id=3]
 [ext_resource path="res://Scripts/PlaneMaker.cs" type="Script" id=4]
 [ext_resource path="res://Scripts/LandscapeMaker.cs" type="Script" id=5]
+
+[sub_resource type="SphereShape" id=1]
 
 [node name="Node" type="Node"]
 
@@ -46,3 +48,11 @@ shadow_color = Color( 0.0235294, 0.117647, 0.262745, 1 )
 
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.920512, 0.390715, 0, -0.390715, 0.920512, 0, 2.60327, 4.98547 )
+
+[node name="RigidBody" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.05569, 16.8728, -13.922 )
+
+[node name="CSGSphere" type="CSGSphere" parent="RigidBody"]
+
+[node name="CollisionShape" type="CollisionShape" parent="RigidBody"]
+shape = SubResource( 1 )

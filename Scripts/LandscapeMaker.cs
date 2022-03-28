@@ -60,5 +60,8 @@ public class LandscapeMaker : MeshInstance
     {
       Mesh.SurfaceSetMaterial(0, ResourceLoader.Load<Material>($"res://Materials/{i}.tres"));
     }
+
+    // Collisions for testing...
+    CreateTrimeshCollision();
   }
 }
